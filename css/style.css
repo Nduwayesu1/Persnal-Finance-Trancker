@@ -239,6 +239,33 @@ input:focus {
     color: #9ca3af;
 }
 
+/* MESSAGE BOX */
+.message-box {
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    display: none;
+}
+
+.message-box.success {
+    background: #e7f9ef;
+    border: 1px solid #34d399;
+    color: #059669;
+}
+
+.message-box.error {
+    background: #fde8e8;
+    border: 1px solid #f87171;
+    color: #b91c1c;
+}
+
+.hidden {
+    display: none;
+}
+
+
 /* RESPONSIVE */
 @media(max-width:768px){
     .container { flex-direction: column; }
