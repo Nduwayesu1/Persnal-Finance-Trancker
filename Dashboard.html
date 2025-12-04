@@ -5,23 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Finance Dashboard</title>
 
+  <!-- CSS -->
   <link rel="stylesheet" href="/css/dashboard.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
 </head>
 <body>
 
   <!-- Mobile Hamburger Button -->
-  <button class="mobile-menu-btn" id="openSidebarBtn">
+  <button class="mobile-menu-btn" id="openSidebarBtn" aria-label="Open sidebar">
     <i class="fa-solid fa-bars"></i>
   </button>
 
   <div class="container">
 
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" role="navigation" aria-label="Sidebar menu">
 
       <!-- Close Button (Mobile only) -->
-      <button class="close-sidebar-btn" id="closeSidebarBtn">
+      <button class="close-sidebar-btn" id="closeSidebarBtn" aria-label="Close sidebar">
         <i class="fa-solid fa-xmark"></i>
       </button>
 
@@ -29,20 +35,33 @@
         <h1>Finance</h1>
       </div>
 
-      <nav class="nav-menu">
-        <button class="nav-btn active">Dashboard</button>
-        <button class="nav-btn">Transactions</button>
-        <button class="nav-btn">Analytics</button>
-        <button class="nav-btn">Settings</button>
+      <nav class="nav-menu" role="menu" aria-label="Primary">
+        <button class="nav-btn active" role="menuitem" tabindex="0">
+          <i class="fa-solid fa-table-columns" style="width:18px;"></i> Dashboard
+        </button>
+        <button class="nav-btn" role="menuitem" tabindex="-1">
+          <i class="fa-solid fa-paper-plane" style="width:18px;"></i> Transactions
+        </button>
+        <button class="nav-btn" role="menuitem" tabindex="-1">
+          <i class="fa-solid fa-chart-column" style="width:18px;"></i> Analytics
+        </button>
+        <button class="nav-btn" role="menuitem" tabindex="-1">
+          <i class="fa-solid fa-gear" style="width:18px;"></i> Settings
+        </button>
       </nav>
 
-      <button class="signout-btn" id="signOutBtn">Sign Out</button>
+      <!-- Mobile Divider -->
+      <div class="mobile-divider"></div>
+
+      <button class="signout-btn" id="signOutBtn">
+        <i class="fa-solid fa-arrow-right-from-bracket" style="width:18px;"></i> Sign Out
+      </button>
     </aside>
 
     <!-- MAIN CONTENT -->
-    <main class="main-content">
+    <main class="main-content" role="main">
 
-      <div class="welcome-user">
+      <div class="welcome-user" aria-live="polite">
         <i class="fa-solid fa-user"></i>
         Welcome, <span id="userName">Guest</span>
       </div>
@@ -52,9 +71,9 @@
         <p class="subtitle">Manage all your financial transactions</p>
 
         <div class="transactions-controls">
-          <input type="search" id="searchInput" placeholder="Search transactions..." />
+          <input type="search" id="searchInput" placeholder="Search transactions..." aria-label="Search transactions" />
 
-          <select id="categoryFilter">
+          <select id="categoryFilter" aria-label="Filter by category">
             <option value="all">All Categories</option>
             <option value="food">Food</option>
             <option value="transport">Transport</option>
@@ -62,39 +81,44 @@
             <option value="entertainment">Entertainment</option>
           </select>
 
-          <button id="addTransactionBtn" class="primary-btn">+ Add Transaction</button>
+          <button id="addTransactionBtn" class="primary-btn" type="button">+ Add Transaction</button>
         </div>
 
-        <ul id="transactionList" class="transaction-list"></ul>
+        <ul id="transactionList" class="transaction-list" aria-live="polite" aria-label="Transaction list"></ul>
       </section>
 
     </main>
   </div>
 
   <!-- MODAL -->
-  <div id="transactionModal" class="modal hidden">
+  <div id="transactionModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-content">
+
       <h3 id="modalTitle">Add Transaction</h3>
 
       <form id="transactionForm">
-        <label>
+        <label for="transactionTitle">
           Title
           <input type="text" id="transactionTitle" required />
         </label>
 
-        <label>
+        <label for="transactionCategory">
           Category
           <select id="transactionCategory" required>
             <option value="" disabled selected>Select category</option>
+            <option value="food">Food</option>
+            <option value="transport">Transport</option>
+            <option value="utilities">Utilities</option>
+            <option value="entertainment">Entertainment</option>
           </select>
         </label>
 
-        <label>
+        <label for="transactionAmount">
           Amount
           <input type="number" id="transactionAmount" step="0.01" required />
         </label>
 
-        <label>
+        <label for="transactionDate">
           Date
           <input type="date" id="transactionDate" required />
         </label>
@@ -108,6 +132,8 @@
     </div>
   </div>
 
+  <!-- JS -->
   <script type="module" src="/js/dashboard.js"></script>
+
 </body>
 </html>
