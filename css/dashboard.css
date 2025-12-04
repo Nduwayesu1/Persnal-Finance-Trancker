@@ -236,12 +236,15 @@ body {
   display: none;
 }
 
-.modal-content {
-  background: white;
-  border-radius: 16px;
-  padding: 32px 40px;
-  width: 400px;
+.main-content {
+  flex-grow: 1;
+  padding: 48px;
+  position: relative;
+  margin-left: 240px; /* <-- space for the sidebar */
+  min-height: 100vh;
+  background-color: #f3f4f6; /* optional, ensures content area is visible */
 }
+
 
 .modal-content label {
   display: flex;
