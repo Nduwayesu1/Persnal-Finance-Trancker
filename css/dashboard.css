@@ -100,6 +100,7 @@ body {
   padding: 48px;
   overflow-y: auto;
   position: relative;
+  margin-left: 240px; /* ensures content is not hidden under sidebar */
 }
 
 /* WELCOME USER BADGE */
