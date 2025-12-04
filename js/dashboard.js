@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const openSidebarBtn = document.getElementById("openSidebarBtn");
   const closeSidebarBtn = document.getElementById("closeSidebarBtn");
   const sidebar = document.querySelector(".sidebar");
+  const navButtons = document.querySelectorAll(".nav-btn");
 
   openSidebarBtn.addEventListener("click", () => {
     sidebar.classList.add("open");
@@ -48,10 +49,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Close sidebar when a nav button is clicked (mobile only)
+  navButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (window.innerWidth <= 768) {
+        sidebar.classList.remove("open");
+      }
+      navButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
+
   /* --------------------------- */
   /* TRANSACTIONS LOGIC          */
   /* --------------------------- */
-
   const categories = ["Food", "Transport", "Utilities", "Entertainment"];
   const transactions = [];
 
@@ -109,7 +120,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   categoryFilter.addEventListener("change", highlightTransactions);
-
   searchInput.addEventListener("input", highlightTransactions);
 
   addTransactionBtn.addEventListener("click", () => {
@@ -121,7 +131,6 @@ document.addEventListener("DOMContentLoaded", () => {
     transactionModal.classList.add("hidden");
   });
 
-  // Add new transaction
   transactionForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
