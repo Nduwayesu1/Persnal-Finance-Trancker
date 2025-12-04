@@ -4,31 +4,47 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Finance Dashboard</title>
+
   <link rel="stylesheet" href="/css/dashboard.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 </head>
 <body>
+
+  <!-- Mobile Hamburger Button -->
+  <button class="mobile-menu-btn" id="openSidebarBtn">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
   <div class="container">
 
     <!-- Sidebar -->
     <aside class="sidebar">
+
+      <!-- Close Button (Mobile only) -->
+      <button class="close-sidebar-btn" id="closeSidebarBtn">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
       <div class="logo">
         <h1>Finance</h1>
       </div>
+
       <nav class="nav-menu">
         <button class="nav-btn active">Dashboard</button>
         <button class="nav-btn">Transactions</button>
         <button class="nav-btn">Analytics</button>
         <button class="nav-btn">Settings</button>
       </nav>
+
       <button class="signout-btn" id="signOutBtn">Sign Out</button>
     </aside>
 
-    <!-- Main Content -->
+    <!-- MAIN CONTENT -->
     <main class="main-content">
-      <!-- Top right welcome with icon -->
+
       <div class="welcome-user">
-        <i class="fa-solid fa-user"></i> Welcome, <span id="userName">Guest</span>
+        <i class="fa-solid fa-user"></i>
+        Welcome, <span id="userName">Guest</span>
       </div>
 
       <section class="transactions-section">
@@ -37,6 +53,7 @@
 
         <div class="transactions-controls">
           <input type="search" id="searchInput" placeholder="Search transactions..." />
+
           <select id="categoryFilter">
             <option value="all">All Categories</option>
             <option value="food">Food</option>
@@ -44,49 +61,53 @@
             <option value="utilities">Utilities</option>
             <option value="entertainment">Entertainment</option>
           </select>
+
           <button id="addTransactionBtn" class="primary-btn">+ Add Transaction</button>
         </div>
 
-        <ul id="transactionList" class="transaction-list">
-          <!-- Transactions rendered by dashboard.js -->
-        </ul>
+        <ul id="transactionList" class="transaction-list"></ul>
       </section>
-    </main>
 
+    </main>
   </div>
 
-  <!-- Modal for Add/Edit Transaction -->
+  <!-- MODAL -->
   <div id="transactionModal" class="modal hidden">
     <div class="modal-content">
       <h3 id="modalTitle">Add Transaction</h3>
+
       <form id="transactionForm">
         <label>
           Title
           <input type="text" id="transactionTitle" required />
         </label>
+
         <label>
           Category
           <select id="transactionCategory" required>
             <option value="" disabled selected>Select category</option>
           </select>
         </label>
+
         <label>
           Amount
           <input type="number" id="transactionAmount" step="0.01" required />
         </label>
+
         <label>
           Date
           <input type="date" id="transactionDate" required />
         </label>
+
         <div class="modal-actions">
           <button type="submit" class="primary-btn">Save</button>
           <button type="button" id="cancelBtn">Cancel</button>
         </div>
+
       </form>
     </div>
   </div>
 
-  <!-- External JS handles all logic -->
   <script type="module" src="/js/dashboard.js"></script>
 </body>
 </html>
