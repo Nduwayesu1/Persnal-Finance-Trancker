@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     sidebar.classList.remove("open");
   });
 
-  // Close sidebar when clicking outside (mobile)
+  // Close sidebar when clicking outside (mobile only)
   document.addEventListener("click", (e) => {
     if (window.innerWidth <= 768) {
       if (!sidebar.contains(e.target) && !openSidebarBtn.contains(e.target)) {
@@ -62,8 +62,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const transactionModal = document.getElementById("transactionModal");
   const addTransactionBtn = document.getElementById("addTransactionBtn");
   const cancelBtn = document.getElementById("cancelBtn");
+  const searchInput = document.getElementById("searchInput");
 
-  // Fill category dropdown
+  // Fill category dropdown in the modal form
   categories.forEach(cat => {
     const option = document.createElement("option");
     option.value = cat.toLowerCase();
@@ -76,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
     list.forEach((t) => {
       const li = document.createElement("li");
       li.className = "transaction-item";
-      li.dataset.category = t.category;
+      li.dataset.category = t.category.toLowerCase();
 
       li.innerHTML = `
         <div class="transaction-details">
@@ -96,12 +97,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function highlightTransactions() {
     const selected = categoryFilter.value;
+    const searchTerm = searchInput.value.trim().toLowerCase();
+
     document.querySelectorAll(".transaction-item").forEach((item) => {
-      item.style.opacity = item.dataset.category === selected || selected === "all" ? "1" : "0.3";
+      const matchesCategory = selected === "all" || item.dataset.category === selected;
+      const title = item.querySelector(".transaction-title").textContent.toLowerCase();
+      const matchesSearch = title.includes(searchTerm);
+
+      item.style.opacity = (matchesCategory && matchesSearch) ? "1" : "0.3";
     });
   }
 
   categoryFilter.addEventListener("change", highlightTransactions);
+
+  searchInput.addEventListener("input", highlightTransactions);
 
   addTransactionBtn.addEventListener("click", () => {
     transactionModal.classList.remove("hidden");
@@ -117,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
 
     const newTransaction = {
-      title: document.getElementById("transactionTitle").value,
+      title: document.getElementById("transactionTitle").value.trim(),
       category: document.getElementById("transactionCategory").value,
       amount: parseFloat(document.getElementById("transactionAmount").value),
       date: document.getElementById("transactionDate").value,
@@ -130,5 +139,8 @@ document.addEventListener("DOMContentLoaded", () => {
     transactionForm.reset();
     transactionModal.classList.add("hidden");
   });
+
+  // Initial render (empty)
+  renderTransactions(transactions);
 
 });
