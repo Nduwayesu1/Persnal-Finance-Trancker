@@ -49,14 +49,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Close sidebar when a nav button is clicked (mobile only)
+  // Handle nav button clicks: set active and close sidebar on mobile
   navButtons.forEach(btn => {
     btn.addEventListener("click", () => {
+      navButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
       if (window.innerWidth <= 768) {
         sidebar.classList.remove("open");
       }
-      navButtons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
     });
   });
 
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
     transactionModal.classList.add("hidden");
   });
 
-  // Initial render (empty)
+  // Initial render
   renderTransactions(transactions);
 
 });
