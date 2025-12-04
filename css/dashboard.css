@@ -19,7 +19,7 @@ body {
 }
 
 /* ────────────────────────────────────────────── */
-/* SIDEBAR (DESKTOP)                              */
+/* SIDEBAR (DESKTOP & MOBILE)                     */
 /* ────────────────────────────────────────────── */
 .sidebar {
   width: 240px;
@@ -30,6 +30,7 @@ body {
   padding: 32px 24px;
   gap: 32px;
   z-index: 200;
+  position: relative; /* Always visible */
 }
 
 .logo h1 {
@@ -67,7 +68,7 @@ body {
   color: white;
 }
 
-/* SIGN OUT BUTTON (DESKTOP) */
+/* SIGN OUT BUTTON */
 .signout-btn {
   margin-top: auto;
   width: 100%;
@@ -273,103 +274,55 @@ body {
 }
 
 /* ────────────────────────────────────────────── */
-/* MOBILE SIDEBAR / HAMBURGER                     */
+/* REMOVE HAMBURGER / MOBILE SIDEBAR STYLES      */
 /* ────────────────────────────────────────────── */
 .mobile-menu-btn,
 .close-sidebar-btn {
-  display: none;
+  display: none !important;
 }
 
 @media (max-width: 768px) {
-
-  /* Hamburger */
-  .mobile-menu-btn {
-    display: block;
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    background: #10b981;
-    border: none;
-    color: white;
-    padding: 10px 14px;
-    font-size: 1.3rem;
-    border-radius: 10px;
-    z-index: 250;
-    cursor: pointer;
-  }
-
-  /* Mobile Sidebar */
+  /* Sidebar stays visible */
   .sidebar {
-    position: fixed;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100vh;
-    background: white;
+    width: 240px;
+    position: relative;
+    height: auto;
+    border-radius: 0;
     padding: 32px 24px;
-    border-radius: 0 0 24px 24px;
-    overflow-y: auto;
-    transition: left 0.28s ease;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
   }
 
-  .sidebar.open {
-    left: 0;
+  /* Main content adjusts */
+  .main-content {
+    margin-left: 240px;
+    padding: 24px;
   }
 
-  .close-sidebar-btn {
-    display: block;
-    position: absolute;
-    top: 22px;
-    right: 24px;
-    background: none;
-    border: none;
-    font-size: 1.6rem;
-    color: #111;
-    cursor: pointer;
-  }
-
-  /* NAV BUTTONS (MOBILE) */
+  /* Nav buttons look same on mobile */
   .nav-btn {
     padding: 16px 18px;
     font-size: 1.15rem;
     border-radius: 18px;
-    color: #0f172a;
   }
 
   .nav-btn.active {
     background: #10b981;
     color: white;
-    font-weight: 600;
-    border-radius: 20px;
   }
 
-  /* Divider above Sign Out */
-  .mobile-divider {
-    width: 100%;
-    height: 1px;
-    background: #e5e7eb;
-    margin: 40px 0 22px;
-  }
-
-  /* Sign Out → mobile version */
+  /* Sign out button same style */
   .signout-btn {
-    width: 100%;
+    margin-top: auto;
     padding: 18px 20px;
     border-radius: 20px;
     font-size: 1.15rem;
     border: 1px solid #e5e7eb;
     color: #0f172a;
-    background: white;
   }
 
   .signout-btn:hover {
     background-color: #fef3f2;
     border-color: #ef4444;
     color: #b91c1c;
-  }
-
-  .main-content {
-    padding: 24px;
-    margin-top: 80px;
   }
 }
