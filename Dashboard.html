@@ -7,18 +7,12 @@
 
   <!-- CSS -->
   <link rel="stylesheet" href="/css/dashboard.css" />
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    crossorigin="anonymous"
-    referrerpolicy="no-referrer"
-  />
 </head>
 <body>
 
   <!-- Mobile Hamburger Button -->
   <button class="mobile-menu-btn" id="openSidebarBtn" aria-label="Open sidebar">
-    <i class="fa-solid fa-bars"></i>
+    ☰
   </button>
 
   <div class="container">
@@ -28,7 +22,7 @@
 
       <!-- Close Button (Mobile only) -->
       <button class="close-sidebar-btn" id="closeSidebarBtn" aria-label="Close sidebar">
-        <i class="fa-solid fa-xmark"></i>
+        ✕
       </button>
 
       <div class="logo">
@@ -36,33 +30,22 @@
       </div>
 
       <nav class="nav-menu" role="menu" aria-label="Primary">
-        <button class="nav-btn active" role="menuitem" tabindex="0">
-          <i class="fa-solid fa-table-columns" style="width:18px;"></i> Dashboard
-        </button>
-        <button class="nav-btn" role="menuitem" tabindex="-1">
-          <i class="fa-solid fa-paper-plane" style="width:18px;"></i> Transactions
-        </button>
-        <button class="nav-btn" role="menuitem" tabindex="-1">
-          <i class="fa-solid fa-chart-column" style="width:18px;"></i> Analytics
-        </button>
-        <button class="nav-btn" role="menuitem" tabindex="-1">
-          <i class="fa-solid fa-gear" style="width:18px;"></i> Settings
-        </button>
+        <button class="nav-btn active" role="menuitem" tabindex="0">Dashboard</button>
+        <button class="nav-btn" role="menuitem" tabindex="-1">Transactions</button>
+        <button class="nav-btn" role="menuitem" tabindex="-1">Analytics</button>
+        <button class="nav-btn" role="menuitem" tabindex="-1">Settings</button>
       </nav>
 
       <!-- Mobile Divider -->
       <div class="mobile-divider"></div>
 
-      <button class="signout-btn" id="signOutBtn">
-        <i class="fa-solid fa-arrow-right-from-bracket" style="width:18px;"></i> Sign Out
-      </button>
+      <button class="signout-btn" id="signOutBtn">Sign Out</button>
     </aside>
 
     <!-- MAIN CONTENT -->
     <main class="main-content" role="main">
 
       <div class="welcome-user" aria-live="polite">
-        <i class="fa-solid fa-user"></i>
         Welcome, <span id="userName">Guest</span>
       </div>
 
