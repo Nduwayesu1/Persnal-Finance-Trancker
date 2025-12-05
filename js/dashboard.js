@@ -2,32 +2,67 @@ import { auth, signOut } from "./firebase-init.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ---------- USER AUTH ----------
+
+  /* --------------------------- */
+  /* AUTH & USER NAME DISPLAY    */
+  /* --------------------------- */
   const userNameSpan = document.getElementById("userName");
   const signOutBtn = document.getElementById("signOutBtn");
 
-  // Show email of logged-in user
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      userNameSpan.textContent = user.email; // ONLY email
+      userNameSpan.textContent = user.email;
     } else {
-      window.location.href = "/index.html"; // Redirect if not logged in
+      window.location.href = "/index.html";
     }
   });
 
-  // Logout
   if (signOutBtn) {
     signOutBtn.addEventListener("click", async () => {
-      try {
-        await signOut(auth);
-        window.location.href = "/index.html";
-      } catch (err) {
-        console.error("Sign out error:", err);
-      }
+      await signOut(auth);
+      window.location.href = "/index.html";
     });
   }
 
-  // ---------- TRANSACTIONS ----------
+  /* --------------------------- */
+  /* SIDEBAR MOBILE CONTROLS     */
+  /* --------------------------- */
+  const openSidebarBtn = document.getElementById("openSidebarBtn");
+  const closeSidebarBtn = document.getElementById("closeSidebarBtn");
+  const sidebar = document.querySelector(".sidebar");
+  const navButtons = document.querySelectorAll(".nav-btn");
+
+  openSidebarBtn.addEventListener("click", () => {
+    sidebar.classList.add("open");
+  });
+
+  closeSidebarBtn.addEventListener("click", () => {
+    sidebar.classList.remove("open");
+  });
+
+  // Close sidebar when clicking outside (mobile only)
+  document.addEventListener("click", (e) => {
+    if (window.innerWidth <= 768) {
+      if (!sidebar.contains(e.target) && !openSidebarBtn.contains(e.target)) {
+        sidebar.classList.remove("open");
+      }
+    }
+  });
+
+  // Handle nav button clicks: set active and close sidebar on mobile
+  navButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      navButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      if (window.innerWidth <= 768) {
+        sidebar.classList.remove("open");
+      }
+    });
+  });
+
+  /* --------------------------- */
+  /* TRANSACTIONS LOGIC          */
+  /* --------------------------- */
   const categories = ["Food", "Transport", "Utilities", "Entertainment"];
   const transactions = [];
 
@@ -38,28 +73,32 @@ document.addEventListener("DOMContentLoaded", () => {
   const transactionModal = document.getElementById("transactionModal");
   const addTransactionBtn = document.getElementById("addTransactionBtn");
   const cancelBtn = document.getElementById("cancelBtn");
+  const searchInput = document.getElementById("searchInput");
 
-  // Populate category dropdown
+  // Fill category dropdown in the modal form
   categories.forEach(cat => {
-    const optionForm = document.createElement("option");
-    optionForm.value = cat.toLowerCase();
-    optionForm.textContent = cat;
-    transactionCategory.appendChild(optionForm);
+    const option = document.createElement("option");
+    option.value = cat.toLowerCase();
+    option.textContent = cat;
+    transactionCategory.appendChild(option);
   });
 
-  // Render transactions
   function renderTransactions(list) {
     transactionList.innerHTML = "";
     list.forEach((t) => {
       const li = document.createElement("li");
-      li.dataset.category = t.category;
+      li.className = "transaction-item";
+      li.dataset.category = t.category.toLowerCase();
+
       li.innerHTML = `
         <div class="transaction-details">
           <div class="transaction-title">${t.title}</div>
-          <div class="transaction-category">${t.category.charAt(0).toUpperCase() + t.category.slice(1)}</div>
+          <div class="transaction-category">${t.category}</div>
         </div>
         <div class="transaction-meta">
-          <div class="transaction-amount ${t.amount >= 0 ? "amount-positive" : "amount-negative"}">$${t.amount.toFixed(2)}</div>
+          <div class="transaction-amount ${t.amount >= 0 ? "amount-positive" : "amount-negative"}">
+            $${t.amount.toFixed(2)}
+          </div>
           <div class="transaction-date">${t.date}</div>
         </div>
       `;
@@ -67,42 +106,50 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Filter transactions
   function highlightTransactions() {
-    const selectedCategory = categoryFilter.value;
-    document.querySelectorAll("#transactionList li").forEach(item => {
-      if (selectedCategory === "all" || item.dataset.category === selectedCategory) {
-        item.style.opacity = "1";
-        item.style.fontWeight = "bold";
-      } else {
-        item.style.opacity = "0.3";
-        item.style.fontWeight = "normal";
-      }
+    const selected = categoryFilter.value;
+    const searchTerm = searchInput.value.trim().toLowerCase();
+
+    document.querySelectorAll(".transaction-item").forEach((item) => {
+      const matchesCategory = selected === "all" || item.dataset.category === selected;
+      const title = item.querySelector(".transaction-title").textContent.toLowerCase();
+      const matchesSearch = title.includes(searchTerm);
+
+      item.style.opacity = (matchesCategory && matchesSearch) ? "1" : "0.3";
     });
   }
 
   categoryFilter.addEventListener("change", highlightTransactions);
+  searchInput.addEventListener("input", highlightTransactions);
 
-  // Modal controls
-  addTransactionBtn.addEventListener("click", () => transactionModal.classList.remove("hidden"));
+  addTransactionBtn.addEventListener("click", () => {
+    transactionModal.classList.remove("hidden");
+  });
+
   cancelBtn.addEventListener("click", () => {
     transactionForm.reset();
     transactionModal.classList.add("hidden");
   });
 
-  // Add transaction
   transactionForm.addEventListener("submit", (e) => {
     e.preventDefault();
+
     const newTransaction = {
-      title: document.getElementById("transactionTitle").value,
+      title: document.getElementById("transactionTitle").value.trim(),
       category: document.getElementById("transactionCategory").value,
       amount: parseFloat(document.getElementById("transactionAmount").value),
-      date: document.getElementById("transactionDate").value
+      date: document.getElementById("transactionDate").value,
     };
+
     transactions.push(newTransaction);
     renderTransactions(transactions);
     highlightTransactions();
+
     transactionForm.reset();
     transactionModal.classList.add("hidden");
   });
+
+  // Initial render
+  renderTransactions(transactions);
+
 });

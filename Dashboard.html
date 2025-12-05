@@ -4,31 +4,40 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Finance Dashboard</title>
+
+  <!-- CSS -->
   <link rel="stylesheet" href="/css/dashboard.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
+
   <div class="container">
 
     <!-- Sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" role="navigation" aria-label="Sidebar menu">
+
       <div class="logo">
         <h1>Finance</h1>
       </div>
-      <nav class="nav-menu">
-        <button class="nav-btn active">Dashboard</button>
-        <button class="nav-btn">Transactions</button>
-        <button class="nav-btn">Analytics</button>
-        <button class="nav-btn">Settings</button>
+
+      <nav class="nav-menu" role="menu" aria-label="Primary">
+        <button class="nav-btn active" role="menuitem" tabindex="0">Dashboard</button>
+        <a href="/Transaction.html" class="nav-btn-link">
+          <button class="nav-btn" role="menuitem" tabindex="-1">Transactions</button>
+        </a>
+        <button class="nav-btn" role="menuitem" tabindex="-1">Analytics</button>
+        <button class="nav-btn" role="menuitem" tabindex="-1">Settings</button>
       </nav>
+
+      <div class="mobile-divider"></div>
+
       <button class="signout-btn" id="signOutBtn">Sign Out</button>
     </aside>
 
-    <!-- Main Content -->
-    <main class="main-content">
-      <!-- Top right welcome with icon -->
-      <div class="welcome-user">
-        <i class="fa-solid fa-user"></i> Welcome, <span id="userName">Guest</span>
+    <!-- MAIN CONTENT -->
+    <main class="main-content" role="main">
+
+      <div class="welcome-user" aria-live="polite">
+        Welcome, <span id="userName">Guest</span>
       </div>
 
       <section class="transactions-section">
@@ -36,57 +45,26 @@
         <p class="subtitle">Manage all your financial transactions</p>
 
         <div class="transactions-controls">
-          <input type="search" id="searchInput" placeholder="Search transactions..." />
-          <select id="categoryFilter">
+          <input type="search" id="searchInput" placeholder="Search transactions..." aria-label="Search transactions" />
+
+          <select id="categoryFilter" aria-label="Filter by category">
             <option value="all">All Categories</option>
             <option value="food">Food</option>
             <option value="transport">Transport</option>
             <option value="utilities">Utilities</option>
             <option value="entertainment">Entertainment</option>
           </select>
-          <button id="addTransactionBtn" class="primary-btn">+ Add Transaction</button>
+
         </div>
 
-        <ul id="transactionList" class="transaction-list">
-          <!-- Transactions rendered by dashboard.js -->
-        </ul>
+        <ul id="transactionList" class="transaction-list" aria-live="polite" aria-label="Transaction list"></ul>
       </section>
+
     </main>
-
   </div>
 
-  <!-- Modal for Add/Edit Transaction -->
-  <div id="transactionModal" class="modal hidden">
-    <div class="modal-content">
-      <h3 id="modalTitle">Add Transaction</h3>
-      <form id="transactionForm">
-        <label>
-          Title
-          <input type="text" id="transactionTitle" required />
-        </label>
-        <label>
-          Category
-          <select id="transactionCategory" required>
-            <option value="" disabled selected>Select category</option>
-          </select>
-        </label>
-        <label>
-          Amount
-          <input type="number" id="transactionAmount" step="0.01" required />
-        </label>
-        <label>
-          Date
-          <input type="date" id="transactionDate" required />
-        </label>
-        <div class="modal-actions">
-          <button type="submit" class="primary-btn">Save</button>
-          <button type="button" id="cancelBtn">Cancel</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- External JS handles all logic -->
+  <!-- JS -->
   <script type="module" src="/js/dashboard.js"></script>
+
 </body>
 </html>

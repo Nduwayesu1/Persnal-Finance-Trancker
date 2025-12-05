@@ -1,0 +1,291 @@
+/* =========================
+   MODAL BACKDROP
+========================= */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* =========================
+   MODAL CONTENT
+========================= */
+.modal-content {
+  background: #fff;
+  width: 500px;
+  max-width: 95%;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  position: relative;
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { transform: scale(0.97); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Close Button */
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* Title + Subtitle */
+.modal-content h3 {
+  margin-bottom: 6px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.modal-subtitle {
+  color: #555;
+  margin-bottom: 18px;
+  font-size: 14px;
+}
+
+/* =========================
+   TOGGLE BUTTONS (Expense/Income)
+========================= */
+.type-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 10px 0;
+  background: #f0f2f5;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+.toggle-btn.active {
+  background: #e8f7ff;
+  color: #008cff;
+}
+
+/* =========================
+   FORM FIELDS
+========================= */
+label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s ease;
+}
+
+input:focus,
+select:focus {
+  border: 1px solid #008cff;
+}
+
+/* =========================
+   RECEIPT UPLOAD
+========================= */
+.receipt-upload {
+  margin-top: 15px;
+}
+
+.upload-box {
+  border: 2px dashed #cccccc;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 8px;
+}
+
+#uploadBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #008cff;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+/* =========================
+   ACTION BUTTONS
+========================= */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.primary-btn {
+  background: #02b37a;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.primary-btn:hover {
+  background: #029e6c;
+}
+
+.cancel-btn {
+  background: #e9e9e9;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.cancel-btn:hover {
+  background: #d8d8d8;
+}
+
+/* =========================
+   TRANSACTION LIST
+========================= */
+.transaction-list {
+  margin-top: 25px;
+  list-style: none;
+  padding: 0;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: #f8f9fb;
+  margin-bottom: 12px;
+  border-left: 5px solid transparent;
+  transition: transform 0.1s ease;
+  flex-wrap: wrap;
+}
+
+.transaction-item:hover {
+  transform: scale(1.01);
+}
+
+.transaction-item.expense {
+  border-color: #ff5252;
+}
+
+.transaction-item.income {
+  border-color: #18c964;
+}
+
+.transaction-info {
+  display: flex;
+  flex-direction: column;
+  max-width: 60%;
+  min-width: 120px;
+  overflow: hidden;
+}
+
+.transaction-title {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.transaction-meta {
+  font-size: 12px;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.transaction-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.transaction-amount {
+  font-weight: 600;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.transaction-amount.income {
+  color: #18c964;
+}
+
+.transaction-amount.expense {
+  color: #ff5252;
+}
+
+/* Buttons inside transaction-actions */
+.transaction-actions .receipt-link,
+.transaction-actions .edit-btn,
+.transaction-actions .delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.transaction-actions img {
+  width: 18px;
+  height: 18px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .transaction-item {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 14px;
+  }
+
+  .transaction-info {
+    max-width: 100%;
+  }
+
+  .transaction-actions {
+    margin-top: 8px;
+    margin-left: 0;
+  }
+}
