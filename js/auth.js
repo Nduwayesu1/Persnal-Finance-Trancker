@@ -1,97 +1,66 @@
-import { auth } from "./firebase-init.js";
+// Firebase App
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+
+// Firebase Auth
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+// Firestore
 import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
-  updateProfile,
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-const messageBox = document.getElementById("messageBox");
+// Storage (for receipts)
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
 
-function showMessage(type, text) {
-  messageBox.classList.remove("hidden", "success", "error");
-  messageBox.classList.add(type);
-  messageBox.textContent = text;
-  messageBox.style.display = "block";
-  setTimeout(() => {
-    messageBox.style.display = "none";
-  }, 4000);
-}
 
-/* ---------------- SIGN UP ---------------- */
-const signupForm = document.getElementById("signupForm");
-if (signupForm) {
-  signupForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
+/* ===============================
+    FIREBASE CONFIG
+=============================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyCTUMjsg5uIlJrs3NDsF1iiGYZ_iJT5Vec",
+  authDomain: "financetracker-e5650.firebaseapp.com",
+  projectId: "financetracker-e5650",
+  storageBucket: "financetracker-e5650.appspot.com",
+  messagingSenderId: "475408463794",
+  appId: "1:475408463794:web:dbbbda33274fa0e51c16ab"
+};
 
-    const fullName = document.getElementById("fullName").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+// Init Firebase
+export const app = initializeApp(firebaseConfig);
 
-      // Set displayName if user entered fullName
-      if (fullName) {
-        await updateProfile(userCredential.user, { displayName: fullName });
-      }
+// Init Authentication
+export const auth = getAuth(app);
 
-      console.log("Account Created:", userCredential.user);
-      showMessage("success", "Account created successfully!");
+// Init Firestore
+export const db = getFirestore(app);
 
-      signupForm.reset();
+// Init Storage
+export const storage = getStorage(app);
 
-    } catch (error) {
-      console.error(error);
-      showMessage("error", error.message);
-    }
-  });
-}
+console.log("Firebase Initialized:", app.name);
 
-/* ---------------- SIGN IN ---------------- */
-const signinForm = document.getElementById("signinForm");
-if (signinForm) {
-  signinForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
 
-    const email = document.getElementById("loginEmail").value.trim();
-    const password = document.getElementById("loginPassword").value.trim();
+// Export Firestore helpers
+export {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc
+};
 
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log("Logged in:", userCredential.user);
-      showMessage("success", "Login successful! Redirecting...");
-
-      setTimeout(() => {
-        window.location.href = "/Dashboard.html";
-      }, 1200);
-
-    } catch (error) {
-      console.error(error);
-      showMessage("error", error.message);
-    }
-  });
-}
-
-/* ---------------- GOOGLE SIGN-IN ---------------- */
-const googleBtn = document.querySelector(".google-btn");
-if (googleBtn) {
-  googleBtn.addEventListener("click", async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-
-      console.log("Google Login:", result.user);
-      showMessage("success", "Login successful! Redirecting...");
-
-      setTimeout(() => {
-        window.location.href = "/Dashboard.html";
-      }, 1200);
-
-    } catch (error) {
-      console.error(error);
-      showMessage("error", error.message);
-    }
-  });
-}
+// Storage helpers
+export { ref, uploadBytes, getDownloadURL };
