@@ -21,7 +21,9 @@
 
       <nav class="nav-menu" role="menu" aria-label="Primary">
         <button class="nav-btn active" role="menuitem" tabindex="0">Dashboard</button>
-        <button class="nav-btn" role="menuitem" tabindex="-1">Transactions</button>
+        <a href="/Transaction.html" class="nav-btn-link">
+          <button class="nav-btn" role="menuitem" tabindex="-1">Transactions</button>
+        </a>
         <button class="nav-btn" role="menuitem" tabindex="-1">Analytics</button>
         <button class="nav-btn" role="menuitem" tabindex="-1">Settings</button>
       </nav>
@@ -53,55 +55,12 @@
             <option value="entertainment">Entertainment</option>
           </select>
 
-          <button id="addTransactionBtn" class="primary-btn" type="button">+ Add Transaction</button>
         </div>
 
         <ul id="transactionList" class="transaction-list" aria-live="polite" aria-label="Transaction list"></ul>
       </section>
 
     </main>
-  </div>
-
-  <!-- MODAL -->
-  <div id="transactionModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal-content">
-
-      <h3 id="modalTitle">Add Transaction</h3>
-
-      <form id="transactionForm">
-        <label for="transactionTitle">
-          Title
-          <input type="text" id="transactionTitle" required />
-        </label>
-
-        <label for="transactionCategory">
-          Category
-          <select id="transactionCategory" required>
-            <option value="" disabled selected>Select category</option>
-            <option value="food">Food</option>
-            <option value="transport">Transport</option>
-            <option value="utilities">Utilities</option>
-            <option value="entertainment">Entertainment</option>
-          </select>
-        </label>
-
-        <label for="transactionAmount">
-          Amount
-          <input type="number" id="transactionAmount" step="0.01" required />
-        </label>
-
-        <label for="transactionDate">
-          Date
-          <input type="date" id="transactionDate" required />
-        </label>
-
-        <div class="modal-actions">
-          <button type="submit" class="primary-btn">Save</button>
-          <button type="button" id="cancelBtn">Cancel</button>
-        </div>
-
-      </form>
-    </div>
   </div>
 
   <!-- JS -->
