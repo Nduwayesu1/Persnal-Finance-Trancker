@@ -64,7 +64,35 @@
   </div>
 
   <!-- JS -->
-  <script type="module" src="/js/dashboard.js"></script>
+  <script type="module">
+    import { auth } from '/js/firebase-init.js';
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+    const userName = document.getElementById('userName');
+    const signOutBtn = document.getElementById('signOutBtn');
+
+    // Check auth state
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Display email instead of name
+        userName.textContent = user.email;
+      } else {
+        // Redirect to login if not authenticated
+        window.location.href = '/index.html';
+      }
+    });
+
+    // Logout functionality
+    signOutBtn.addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+        window.location.href = '/index.html';
+      } catch (error) {
+        console.error('Logout error:', error);
+        alert('Logout failed. Please try again.');
+      }
+    });
+  </script>
 
 </body>
 </html>
