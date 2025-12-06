@@ -15,7 +15,7 @@ import {
   updateDoc
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-// Storage (for receipts)
+// Storage
 import {
   getStorage,
   ref,
@@ -24,9 +24,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
 
 
-/* ===============================
-    FIREBASE CONFIG
-=============================== */
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCTUMjsg5uIlJrs3NDsF1iiGYZ_iJT5Vec",
   authDomain: "financetracker-e5650.firebaseapp.com",
@@ -35,7 +33,6 @@ const firebaseConfig = {
   messagingSenderId: "475408463794",
   appId: "1:475408463794:web:dbbbda33274fa0e51c16ab"
 };
-
 
 // Init Firebase
 export const app = initializeApp(firebaseConfig);
@@ -49,18 +46,17 @@ export const db = getFirestore(app);
 // Init Storage
 export const storage = getStorage(app);
 
-console.log("Firebase Initialized:", app.name);
-
-
-// Export Firestore helpers
+// Export Firestore + Storage helper functions
 export {
   collection,
   addDoc,
   getDocs,
   deleteDoc,
   doc,
-  updateDoc
+  updateDoc,
+  ref,
+  uploadBytes,
+  getDownloadURL
 };
 
-// Storage helpers
-export { ref, uploadBytes, getDownloadURL };
+console.log("Firebase Initialized:", app.name);
