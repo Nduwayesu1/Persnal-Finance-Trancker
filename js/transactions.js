@@ -12,7 +12,10 @@ import {
   getDownloadURL
 } from "./firebase-init.js";
 
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
 const auth = getAuth();
 
@@ -39,8 +42,10 @@ document.addEventListener("DOMContentLoaded", () => {
   let transactionsRef;
   let editTransactionId = null;
 
+
   onAuthStateChanged(auth, (user) => {
     if (user) {
+      console.log("Authenticated:", user.uid);
       transactionsRef = collection(db, "users", user.uid, "transactions");
       loadTransactions();
     } else {
@@ -48,34 +53,57 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  function openModal() { modal.classList.remove("hidden"); }
+
+  function openModal() {
+    modal.classList.remove("hidden");
+  }
+
   function closeModal() {
     modal.classList.add("hidden");
     form.reset();
+    editTransactionId = null;
+    transactionType = "expense";
     expenseTab.classList.add("active");
     incomeTab.classList.remove("active");
-    transactionType = "expense";
-    editTransactionId = null;
   }
 
   addBtn.addEventListener("click", openModal);
   closeBtn.addEventListener("click", closeModal);
   cancelBtn.addEventListener("click", closeModal);
-  modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
-  document.addEventListener("keydown", e => { if(e.key==="Escape") closeModal(); });
 
-  expenseTab.addEventListener("click", () => { transactionType="expense"; expenseTab.classList.add("active"); incomeTab.classList.remove("active"); });
-  incomeTab.addEventListener("click", () => { transactionType="income"; incomeTab.classList.add("active"); expenseTab.classList.remove("active"); });
+  modal.addEventListener("click", e => {
+    if (e.target === modal) closeModal();
+  });
+
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeModal();
+  });
+
+
+  expenseTab.addEventListener("click", () => {
+    transactionType = "expense";
+    expenseTab.classList.add("active");
+    incomeTab.classList.remove("active");
+  });
+
+  incomeTab.addEventListener("click", () => {
+    transactionType = "income";
+    incomeTab.classList.add("active");
+    expenseTab.classList.remove("active");
+  });
 
   uploadBtn.addEventListener("click", () => receiptInput.click());
 
   form.addEventListener("submit", async e => {
     e.preventDefault();
-    if (!auth.currentUser) return alert("Sign in required");
+
+    if (!auth.currentUser) return alert("You must be signed in!");
 
     try {
       let receiptURL = null;
-      if(receiptInput.files.length>0){
+
+      // Upload image if exists
+      if (receiptInput.files.length > 0) {
         const file = receiptInput.files[0];
         const fileRef = ref(storage, `receipts/${Date.now()}_${file.name}`);
         await uploadBytes(fileRef, file);
@@ -92,71 +120,110 @@ document.addEventListener("DOMContentLoaded", () => {
         createdAt: Date.now()
       };
 
-      if(editTransactionId){
+      if (editTransactionId) {
         await updateDoc(doc(transactionsRef, editTransactionId), transactionData);
+        alert("Transaction updated successfully!");
         editTransactionId = null;
       } else {
         await addDoc(transactionsRef, transactionData);
+        alert("Transaction saved successfully!");
       }
 
       closeModal();
       loadTransactions();
-    } catch(err) { console.error(err); alert("Failed to save transaction"); }
+
+    } catch (err) {
+      console.error(err);
+      alert(" Failed to save transaction");
+    }
   });
 
-  async function loadTransactions(){
-    if(!transactionsRef) return;
-    transactionList.innerHTML="";
+
+  async function loadTransactions() {
+    if (!transactionsRef) return;
+
+    transactionList.innerHTML = "";
+
     try {
       const snapshot = await getDocs(transactionsRef);
-      snapshot.forEach(docSnap=>renderTransaction(docSnap.id, docSnap.data()));
-    } catch(err){ console.error(err); }
+
+      if (snapshot.empty) {
+        transactionList.innerHTML = `<p class="no-data">No transactions found.</p>`;
+        return;
+      }
+
+      snapshot.forEach(docSnap =>
+        renderTransaction(docSnap.id, docSnap.data())
+      );
+
+    } catch (err) {
+      console.error(err);
+      alert(" Failed to load transactions");
+    }
   }
 
-  function renderTransaction(id, t){
+  
+  function renderTransaction(id, t) {
     const li = document.createElement("li");
-    li.className=`transaction-item ${t.type}`;
-    li.innerHTML=`
+    li.className = `transaction-item ${t.type}`;
+
+    li.innerHTML = `
       <div class="transaction-info">
         <div class="transaction-title">${t.description}</div>
         <div class="transaction-meta">${t.category} • ${t.date}</div>
       </div>
 
-      <div class="transaction-amount ${t.type}">${t.type==="income"?"+":"-"}$${t.amount.toFixed(2)}</div>
+      <div class="transaction-amount ${t.type}">
+        ${t.type === "income" ? "+" : "-"}$${t.amount.toFixed(2)}
+      </div>
 
       <div class="transaction-actions">
-        ${t.receipt?`<a href="${t.receipt}" target="_blank" class="receipt-link"><img src="/image/receipt.png" alt="Receipt"/></a>`:""}
-        <button class="edit-btn" data-id="${id}"><img src="/image/edit.png" alt="Edit"/></button>
-        <button class="delete-btn" data-id="${id}"><img src="/image/delete.png" alt="Delete"/></button>
+        ${t.receipt ? `<a href="${t.receipt}" target="_blank" class="receipt-link"><img src="/image/receipt.png" /></a>` : ""}
+        <button class="edit-btn" data-id="${id}"><img src="/image/edit.png" /></button>
+        <button class="delete-btn" data-id="${id}"><img src="/image/delete.png" /></button>
       </div>
     `;
 
-    li.querySelector(".delete-btn").addEventListener("click",()=>deleteTransaction(id));
-    li.querySelector(".edit-btn").addEventListener("click",()=>openEditModal(id,t));
+    li.querySelector(".delete-btn").addEventListener("click", () => deleteTransaction(id));
+    li.querySelector(".edit-btn").addEventListener("click", () => openEditModal(id, t));
+
     transactionList.appendChild(li);
   }
 
-  async function deleteTransaction(id){
-    if(!auth.currentUser) return alert("Sign in required");
-    try{
-      await deleteDoc(doc(transactionsRef,id));
+
+  async function deleteTransaction(id) {
+    if (!confirm("Are you sure you want to delete this transaction?")) return;
+
+    try {
+      await deleteDoc(doc(transactionsRef, id));
+      alert("Transaction deleted!");
       loadTransactions();
-    }catch(err){ console.error(err); alert("Failed to delete transaction"); }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete transaction");
+    }
   }
 
-  function openEditModal(id,t){
+
+  function openEditModal(id, t) {
     editTransactionId = id;
     transactionType = t.type;
 
-    if(t.type==="expense"){ expenseTab.classList.add("active"); incomeTab.classList.remove("active"); }
-    else { incomeTab.classList.add("active"); expenseTab.classList.remove("active"); }
+    if (t.type === "expense") {
+      expenseTab.classList.add("active");
+      incomeTab.classList.remove("active");
+    } else {
+      incomeTab.classList.add("active");
+      expenseTab.classList.remove("active");
+    }
 
-    amountInput.value=t.amount;
-    categoryInput.value=t.category;
-    dateInput.value=t.date;
-    descriptionInput.value=t.description;
+    amountInput.value = t.amount;
+    categoryInput.value = t.category;
+    dateInput.value = t.date;
+    descriptionInput.value = t.description;
+
     openModal();
   }
 
-  console.log("Transactions module loaded successfully");
+  console.log("Transactions Module Loaded");
 });
