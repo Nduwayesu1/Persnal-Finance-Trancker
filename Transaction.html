@@ -12,41 +12,33 @@
 
 <body>
 
-  <!-- ============================================================
-       MOBILE NAVBAR
-  ============================================================ -->
+
   <header class="mobile-nav">
     <button id="hamburgerBtn" class="hamburger-btn">☰</button>
     <h2>Finance</h2>
   </header>
 
-  <!-- OVERLAY FOR SIDEBAR MOBILE -->
+
   <div id="overlay" class="overlay hidden"></div>
 
-  <!-- ============================================================
-       PAGE WRAPPER
-  ============================================================ -->
+
   <div class="container">
 
-    <!-- ============================================================
-         SIDEBAR
-    ============================================================ -->
+  
     <aside class="sidebar">
       <div class="logo"><h1>Finance</h1></div>
 
       <nav class="nav-menu">
         <button class="nav-btn" onclick="window.location.href='/Dashboard.html'">Dashboard</button>
         <button class="nav-btn active">Transactions</button>
-        <button class="nav-btn">Analytics</button>
+        <button class="nav-btn" onclick="window.location.href='/analytics.html'">Analytics</button>
         <button class="nav-btn" onclick="window.location.href='/settings.html'">Settings</button>
       </nav>
 
       <button id="signOutBtn" class="signout-btn">Sign Out</button>
     </aside>
 
-    <!-- ============================================================
-         MAIN CONTENT
-    ============================================================ -->
+
     <main class="main-content">
       <section class="transactions-section">
 
