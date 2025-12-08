@@ -58,7 +58,7 @@ function showMessage(msg, type = "error") {
 /* Auth Listener */
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
-        window.location.href = "/login.html";
+        window.location.href = "/index.html";
         return;
     }
 
@@ -200,7 +200,7 @@ confirmDelete.addEventListener("click", async () => {
 signOutBtn.addEventListener("click", async () => {
     try {
         await signOut(auth);
-        window.location.href = "/login.html";
+        window.location.href = "/index.html";
     } catch (err) {
         console.error(err);
         showMessage("Failed to sign out.");
