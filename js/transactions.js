@@ -12,11 +12,17 @@ import {
   getDownloadURL
 } from "./firebase-init.js";
 
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
 const auth = getAuth();
 
 document.addEventListener("DOMContentLoaded", () => {
+  /* ============================================================
+     DOM ELEMENTS
+  ============================================================ */
   const addBtn = document.getElementById("addTransactionBtn");
   const modal = document.getElementById("transactionModal");
   const closeBtn = document.getElementById("closeModalBtn");
@@ -35,10 +41,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("transactionForm");
   const transactionList = document.getElementById("transactionList");
 
+  // NEW — mobile navbar & sidebar
+  const hamburgerBtn = document.getElementById("hamburgerBtn");
+  const sidebar = document.querySelector(".sidebar");
+  const overlay = document.getElementById("overlay");
+  const navButtons = document.querySelectorAll(".nav-btn");
+
+  /* ============================================================
+     STATE
+  ============================================================ */
   let transactionType = "expense";
   let transactionsRef;
   let editTransactionId = null;
 
+
+  /* ============================================================
+     AUTH + FIREBASE LOADING
+  ============================================================ */
   onAuthStateChanged(auth, (user) => {
     if (user) {
       transactionsRef = collection(db, "users", user.uid, "transactions");
@@ -48,34 +67,70 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  function openModal() { modal.classList.remove("hidden"); }
+
+  /* ============================================================
+     MODAL HANDLING
+  ============================================================ */
+  function openModal() {
+    modal.classList.remove("hidden");
+  }
+
   function closeModal() {
     modal.classList.add("hidden");
     form.reset();
+    editTransactionId = null;
+
+    transactionType = "expense";
     expenseTab.classList.add("active");
     incomeTab.classList.remove("active");
-    transactionType = "expense";
-    editTransactionId = null;
   }
 
   addBtn.addEventListener("click", openModal);
   closeBtn.addEventListener("click", closeModal);
   cancelBtn.addEventListener("click", closeModal);
-  modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
-  document.addEventListener("keydown", e => { if(e.key==="Escape") closeModal(); });
 
-  expenseTab.addEventListener("click", () => { transactionType="expense"; expenseTab.classList.add("active"); incomeTab.classList.remove("active"); });
-  incomeTab.addEventListener("click", () => { transactionType="income"; incomeTab.classList.add("active"); expenseTab.classList.remove("active"); });
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
+  });
 
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeModal();
+  });
+
+
+  /* ============================================================
+     TYPE SWITCH (Expense / Income)
+  ============================================================ */
+  expenseTab.addEventListener("click", () => {
+    transactionType = "expense";
+    expenseTab.classList.add("active");
+    incomeTab.classList.remove("active");
+  });
+
+  incomeTab.addEventListener("click", () => {
+    transactionType = "income";
+    incomeTab.classList.add("active");
+    expenseTab.classList.remove("active");
+  });
+
+
+  /* ============================================================
+     RECEIPT UPLOAD
+  ============================================================ */
   uploadBtn.addEventListener("click", () => receiptInput.click());
 
-  form.addEventListener("submit", async e => {
+
+  /* ============================================================
+     SUBMIT TRANSACTION
+  ============================================================ */
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    if (!auth.currentUser) return alert("Sign in required");
+    if (!auth.currentUser) return alert("You must be signed in!");
 
     try {
       let receiptURL = null;
-      if(receiptInput.files.length>0){
+
+      if (receiptInput.files.length > 0) {
         const file = receiptInput.files[0];
         const fileRef = ref(storage, `receipts/${Date.now()}_${file.name}`);
         await uploadBytes(fileRef, file);
@@ -92,71 +147,152 @@ document.addEventListener("DOMContentLoaded", () => {
         createdAt: Date.now()
       };
 
-      if(editTransactionId){
+      if (editTransactionId) {
         await updateDoc(doc(transactionsRef, editTransactionId), transactionData);
+        alert("Transaction updated successfully!");
         editTransactionId = null;
       } else {
         await addDoc(transactionsRef, transactionData);
+        alert("Transaction saved successfully!");
       }
 
       closeModal();
       loadTransactions();
-    } catch(err) { console.error(err); alert("Failed to save transaction"); }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save transaction");
+    }
   });
 
-  async function loadTransactions(){
-    if(!transactionsRef) return;
-    transactionList.innerHTML="";
+
+  /* ============================================================
+     LOAD TRANSACTIONS
+  ============================================================ */
+  async function loadTransactions() {
+    if (!transactionsRef) return;
+
+    transactionList.innerHTML = "";
+
     try {
       const snapshot = await getDocs(transactionsRef);
-      snapshot.forEach(docSnap=>renderTransaction(docSnap.id, docSnap.data()));
-    } catch(err){ console.error(err); }
+
+      if (snapshot.empty) {
+        transactionList.innerHTML = `<p class="no-data">No transactions found.</p>`;
+        return;
+      }
+
+      snapshot.forEach((docSnap) =>
+        renderTransaction(docSnap.id, docSnap.data())
+      );
+
+    } catch (err) {
+      console.error(err);
+      alert("Failed to load transactions");
+    }
   }
 
-  function renderTransaction(id, t){
+
+  /* ============================================================
+     RENDER TRANSACTION CARD
+  ============================================================ */
+  function renderTransaction(id, t) {
     const li = document.createElement("li");
-    li.className=`transaction-item ${t.type}`;
-    li.innerHTML=`
-      <div class="transaction-info">
-        <div class="transaction-title">${t.description}</div>
-        <div class="transaction-meta">${t.category} • ${t.date}</div>
+    li.className = `transaction-item ${t.type}`;
+
+    li.innerHTML = `
+      <div class="transaction-left">
+        <div class="transaction-icon">
+          ${t.type === "income" ? "💰" : "💸"}
+        </div>
+        <div class="transaction-info">
+          <div class="transaction-title">${t.description}</div>
+          <div class="transaction-meta">${t.category} • ${t.date}</div>
+        </div>
       </div>
 
-      <div class="transaction-amount ${t.type}">${t.type==="income"?"+":"-"}$${t.amount.toFixed(2)}</div>
+      <div class="transaction-right">
+        <div class="transaction-amount ${t.type}">
+          ${t.type === "income" ? "+" : "-"}$${t.amount.toFixed(2)}
+        </div>
 
-      <div class="transaction-actions">
-        ${t.receipt?`<a href="${t.receipt}" target="_blank" class="receipt-link"><img src="/image/receipt.png" alt="Receipt"/></a>`:""}
-        <button class="edit-btn" data-id="${id}"><img src="/image/edit.png" alt="Edit"/></button>
-        <button class="delete-btn" data-id="${id}"><img src="/image/delete.png" alt="Delete"/></button>
+        <div class="transaction-actions">
+          ${t.receipt ? `<a href="${t.receipt}" target="_blank"><img src="/image/receipt.png"></a>` : ""}
+          <button class="edit-btn" data-id="${id}"><img src="/image/edit.png"></button>
+          <button class="delete-btn" data-id="${id}"><img src="/image/delete.png"></button>
+        </div>
       </div>
     `;
 
-    li.querySelector(".delete-btn").addEventListener("click",()=>deleteTransaction(id));
-    li.querySelector(".edit-btn").addEventListener("click",()=>openEditModal(id,t));
+    li.querySelector(".delete-btn").addEventListener("click", () => deleteTransaction(id));
+    li.querySelector(".edit-btn").addEventListener("click", () => openEditModal(id, t));
+
     transactionList.appendChild(li);
   }
 
-  async function deleteTransaction(id){
-    if(!auth.currentUser) return alert("Sign in required");
-    try{
-      await deleteDoc(doc(transactionsRef,id));
+
+  /* ============================================================
+     DELETE TRANSACTION
+  ============================================================ */
+  async function deleteTransaction(id) {
+    if (!confirm("Are you sure you want to delete this transaction?")) return;
+
+    try {
+      await deleteDoc(doc(transactionsRef, id));
+      alert("Transaction deleted!");
       loadTransactions();
-    }catch(err){ console.error(err); alert("Failed to delete transaction"); }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete transaction");
+    }
   }
 
-  function openEditModal(id,t){
+
+  /* ============================================================
+     EDIT TRANSACTION
+  ============================================================ */
+  function openEditModal(id, t) {
     editTransactionId = id;
     transactionType = t.type;
 
-    if(t.type==="expense"){ expenseTab.classList.add("active"); incomeTab.classList.remove("active"); }
-    else { incomeTab.classList.add("active"); expenseTab.classList.remove("active"); }
+    if (t.type === "expense") {
+      expenseTab.classList.add("active");
+      incomeTab.classList.remove("active");
+    } else {
+      incomeTab.classList.add("active");
+      expenseTab.classList.remove("active");
+    }
 
-    amountInput.value=t.amount;
-    categoryInput.value=t.category;
-    dateInput.value=t.date;
-    descriptionInput.value=t.description;
+    amountInput.value = t.amount;
+    categoryInput.value = t.category;
+    dateInput.value = t.date;
+    descriptionInput.value = t.description;
+
     openModal();
   }
 
-  console.log("Transactions module loaded successfully");
+
+  /* ============================================================
+     MOBILE SIDEBAR LOGIC
+  ============================================================ */
+  hamburgerBtn.addEventListener("click", () => {
+    sidebar.classList.add("active");
+    overlay.classList.remove("hidden");
+    overlay.classList.add("active");
+  });
+
+  overlay.addEventListener("click", closeSidebar);
+
+  function closeSidebar() {
+    sidebar.classList.remove("active");
+    overlay.classList.add("hidden");
+    overlay.classList.remove("active");
+  }
+
+  // Auto-close sidebar when clicking any nav button
+  navButtons.forEach((btn) => {
+    btn.addEventListener("click", closeSidebar);
+  });
+
+
+  console.log("Transactions Module Loaded");
 });
