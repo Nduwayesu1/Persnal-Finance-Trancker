@@ -10,6 +10,12 @@
 </head>
 <body>
 
+  <!-- MOBILE MENU BUTTON -->
+  <button class="mobile-menu-btn"
+          onclick="document.querySelector('.sidebar').classList.toggle('open')">
+    ☰
+  </button>
+
   <div class="container">
 
     <!-- Sidebar -->
@@ -20,17 +26,36 @@
       </div>
 
       <nav class="nav-menu" role="menu" aria-label="Primary">
-        <button class="nav-btn active" role="menuitem" tabindex="0">Dashboard</button>
-        <a href="/Transaction.html" class="nav-btn-link">
-          <button class="nav-btn" role="menuitem" tabindex="-1">Transactions</button>
-        </a>
-        <button class="nav-btn" onclick="window.location.href='/analytics.html'">Analytics</button>
-        <button class="nav-btn" onclick="window.location.href='/settings.html'">Settings</button>
+
+        <!-- Dashboard -->
+        <button class="nav-btn active" role="menuitem"
+                onclick="window.location.href='/dashboard.html'">
+          Dashboard
+        </button>
+
+        <!-- Transactions -->
+        <button class="nav-btn" role="menuitem"
+                onclick="window.location.href='/Transaction.html'">
+          Transactions
+        </button>
+
+        <!-- Analytics -->
+        <button class="nav-btn" role="menuitem"
+                onclick="window.location.href='/analytics.html'">
+          Analytics
+        </button>
+
+        <!-- Settings -->
+        <button class="nav-btn" role="menuitem"
+                onclick="window.location.href='/settings.html'">
+          Settings
+        </button>
+
       </nav>
 
-      <div class="mobile-divider"></div>
-
+      <!-- Sign Out -->
       <button class="signout-btn" id="signOutBtn">Sign Out</button>
+
     </aside>
 
     <!-- MAIN CONTENT -->
@@ -45,7 +70,12 @@
         <p class="subtitle">Manage all your financial transactions</p>
 
         <div class="transactions-controls">
-          <input type="search" id="searchInput" placeholder="Search transactions..." aria-label="Search transactions" />
+          <input
+            type="search"
+            id="searchInput"
+            placeholder="Search transactions..."
+            aria-label="Search transactions"
+          />
 
           <select id="categoryFilter" aria-label="Filter by category">
             <option value="all">All Categories</option>
@@ -54,10 +84,14 @@
             <option value="utilities">Utilities</option>
             <option value="entertainment">Entertainment</option>
           </select>
-
         </div>
 
-        <ul id="transactionList" class="transaction-list" aria-live="polite" aria-label="Transaction list"></ul>
+        <ul id="transactionList"
+            class="transaction-list"
+            aria-live="polite"
+            aria-label="Transaction list">
+        </ul>
+
       </section>
 
     </main>
@@ -66,23 +100,24 @@
   <!-- JS -->
   <script type="module">
     import { auth } from '/js/firebase-init.js';
-    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+    import {
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
     const userName = document.getElementById('userName');
     const signOutBtn = document.getElementById('signOutBtn');
 
-    // Check auth state
+    // Auth listener
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // Display email instead of name
         userName.textContent = user.email;
       } else {
-        // Redirect to login if not authenticated
         window.location.href = '/index.html';
       }
     });
 
-    // Logout functionality
+    // Sign out
     signOutBtn.addEventListener('click', async () => {
       try {
         await signOut(auth);
