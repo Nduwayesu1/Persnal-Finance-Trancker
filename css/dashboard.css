@@ -86,7 +86,7 @@ body {
   cursor: pointer;
 }
 
-/* MAIN CONTENT (DESKTOP) */
+/* MAIN CONTENT */
 .main-content {
   flex-grow: 1;
   margin-left: 240px;
@@ -118,19 +118,49 @@ body {
   margin-bottom: 20px;
 }
 
+/* SEARCH, FILTER, SORT CONTROLS */
 .transactions-controls {
   display: flex;
   gap: 16px;
   margin-bottom: 28px;
+  flex-wrap: wrap;
 }
 
 .transactions-controls input,
 .transactions-controls select {
-  padding: 12px 16px;
+  padding: 12px 40px 12px 16px; /* extra left padding for icon */
   border-radius: 12px;
   border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+  position: relative;
 }
 
+.transactions-controls input::placeholder {
+  color: #9ca3af;
+}
+
+.transactions-controls input {
+  background: url("/icons/search.svg") no-repeat 12px center;
+  background-size: 18px;
+}
+
+.transactions-controls select {
+  background: url("/icons/filter.svg") no-repeat 12px center, url("/icons/dropdown.svg") no-repeat right 12px center;
+  background-size: 18px, 14px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.transactions-controls input:focus,
+.transactions-controls select:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+/* TRANSACTION LIST */
 .transaction-list {
   display: flex;
   flex-direction: column;
@@ -147,17 +177,19 @@ body {
   align-items: center;
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
   gap: 12px;
+  transition: transform 0.2s ease;
 }
 
+.transaction-item:hover {
+  transform: translateY(-2px);
+}
+
+/* DASHBOARD TRANSACTION CARD */
 .dashboard-transaction {
   display: flex;
   align-items: center;
   gap: 12px;
   width: 100%;
-}
-
-.dashboard-icon {
-  font-size: 1.5rem;
 }
 
 .dashboard-title {
@@ -194,18 +226,15 @@ body {
 
 .dashboard-receipt:hover {
   transform: scale(1.1);
-  transition: transform 0.2s ease;
 }
 
-/* MOBILE MENU BUTTON (hidden default) */
+/* MOBILE MENU BUTTON */
 .mobile-menu-btn {
   display: none;
 }
 
 /* MOBILE RESPONSIVE */
 @media (max-width: 768px) {
-
-  /* Hamburger fixed top-left */
   .mobile-menu-btn {
     display: block;
     position: fixed;
