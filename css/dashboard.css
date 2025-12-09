@@ -137,48 +137,64 @@ body {
   gap: 14px;
 }
 
+/* TRANSACTION ITEM */
 .transaction-item {
   background: white;
   padding: 18px;
   border-radius: 16px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  gap: 12px;
 }
 
-.transaction-title {
-  font-weight: 700;
-  font-size: 1.1rem;
-}
-
-.transaction-category {
-  color: #6b7280;
-  font-size: 0.875rem;
-}
-
-.transaction-meta {
-  text-align: right;
+.dashboard-transaction {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
 }
 
-.transaction-amount {
+.dashboard-icon {
+  font-size: 1.5rem;
+}
+
+.dashboard-title {
+  flex-grow: 1;
   font-weight: 700;
-  font-size: 1.05rem;
 }
 
-.amount-positive {
+.dashboard-date {
+  font-size: 0.875rem;
+  color: #6b7280;
+  min-width: 80px;
+  text-align: right;
+}
+
+.dashboard-amount {
+  font-weight: 700;
+  min-width: 80px;
+  text-align: right;
+}
+
+.dashboard-amount.income {
   color: #10b981;
 }
 
-.amount-negative {
+.dashboard-amount.expense {
   color: #ef4444;
 }
 
-.transaction-date {
-  font-size: 0.875rem;
-  color: #6b7280;
+.dashboard-receipt {
+  margin-left: 8px;
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+
+.dashboard-receipt:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
 }
 
 /* MOBILE MENU BUTTON (hidden default) */
@@ -200,11 +216,10 @@ body {
     font-size: 22px;
     border-radius: 10px;
     border: 1px solid #e5e7eb;
-    z-index: 400; /* ensure above sidebar content */
+    z-index: 400;
     cursor: pointer;
   }
 
-  /* Sidebar drawer */
   .sidebar {
     width: 240px;
     height: 100vh !important;
@@ -215,22 +230,19 @@ body {
     transition: transform 0.3s ease;
     overflow-y: auto;
     z-index: 350;
-    /* Push content down so logo is below hamburger */
-    padding-top: 80px;  /* increased from 60px to 80px for more space */
+    padding-top: 80px;
   }
 
   .sidebar.open {
     transform: translateX(0);
   }
 
-  /* Main content full width */
   .main-content {
     margin-left: 0;
     padding: 20px;
     padding-top: 70px;
   }
 
-  /* Welcome user reposition on mobile */
   .welcome-user {
     top: 16px;
     right: 16px;
@@ -246,6 +258,17 @@ body {
   .transaction-item {
     padding: 16px;
     flex-direction: column;
-    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .dashboard-date,
+  .dashboard-amount {
+    text-align: left;
+    min-width: auto;
+  }
+
+  .dashboard-receipt {
+    margin-left: 0;
+    margin-top: 4px;
   }
 }
