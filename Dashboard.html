@@ -27,25 +27,21 @@
 
       <nav class="nav-menu" role="menu" aria-label="Primary">
 
-        <!-- Dashboard -->
         <button class="nav-btn active" role="menuitem"
                 onclick="window.location.href='/dashboard.html'">
           Dashboard
         </button>
 
-        <!-- Transactions -->
         <button class="nav-btn" role="menuitem"
                 onclick="window.location.href='/Transaction.html'">
           Transactions
         </button>
 
-        <!-- Analytics -->
         <button class="nav-btn" role="menuitem"
                 onclick="window.location.href='/analytics.html'">
           Analytics
         </button>
 
-        <!-- Settings -->
         <button class="nav-btn" role="menuitem"
                 onclick="window.location.href='/settings.html'">
           Settings
@@ -53,9 +49,7 @@
 
       </nav>
 
-      <!-- Sign Out -->
       <button class="signout-btn" id="signOutBtn">Sign Out</button>
-
     </aside>
 
     <!-- MAIN CONTENT -->
@@ -66,32 +60,14 @@
       </div>
 
       <section class="transactions-section">
-        <h2>Transactions</h2>
-        <p class="subtitle">Manage all your financial transactions</p>
-
-        <div class="transactions-controls">
-          <input
-            type="search"
-            id="searchInput"
-            placeholder="Search transactions..."
-            aria-label="Search transactions"
-          />
-
-          <select id="categoryFilter" aria-label="Filter by category">
-            <option value="all">All Categories</option>
-            <option value="food">Food</option>
-            <option value="transport">Transport</option>
-            <option value="utilities">Utilities</option>
-            <option value="entertainment">Entertainment</option>
-          </select>
-        </div>
+        <h2>Recent Transactions</h2>
+        <p class="subtitle">Here are your latest transactions</p>
 
         <ul id="transactionList"
             class="transaction-list"
             aria-live="polite"
-            aria-label="Transaction list">
+            aria-label="Recent transaction list">
         </ul>
-
       </section>
 
     </main>
@@ -99,19 +75,52 @@
 
   <!-- JS -->
   <script type="module">
-    import { auth } from '/js/firebase-init.js';
-    import {
-      onAuthStateChanged,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+    import { auth, db, collection, getDocs } from '/js/firebase-init.js';
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
     const userName = document.getElementById('userName');
     const signOutBtn = document.getElementById('signOutBtn');
+    const transactionList = document.getElementById('transactionList');
 
     // Auth listener
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
         userName.textContent = user.email;
+
+        // Load recent transactions
+        const transactionsRef = collection(db, "users", user.uid, "transactions");
+
+        try {
+          const snapshot = await getDocs(transactionsRef);
+          const transactions = snapshot.docs
+            .map(doc => ({ id: doc.id, ...doc.data() }))
+            .sort((a, b) => b.createdAt - a.createdAt) // newest first
+            .slice(0, 5); // latest 5
+
+          transactionList.innerHTML = "";
+          if (transactions.length === 0) {
+            transactionList.innerHTML = `<p class="no-data">No transactions yet.</p>`;
+          } else {
+            transactions.forEach(t => {
+              const li = document.createElement("li");
+              li.className = `transaction-item dashboard ${t.type}`;
+              li.innerHTML = `
+                <div class="dashboard-transaction">
+                  <span class="dashboard-title">${t.description}</span>
+                  <span class="dashboard-date">${t.date}</span>
+                  <span class="dashboard-amount ${t.type}">
+                    ${t.type === "income" ? "+" : "-"}$${t.amount.toFixed(2)}
+                  </span>
+                </div>
+              `;
+              transactionList.appendChild(li);
+            });
+          }
+
+        } catch (error) {
+          console.error("Failed to load transactions:", error);
+        }
+
       } else {
         window.location.href = '/index.html';
       }
