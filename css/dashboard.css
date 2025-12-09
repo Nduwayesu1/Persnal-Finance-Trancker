@@ -5,38 +5,46 @@
   box-sizing: border-box;
 }
 
+html, body {
+  height: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   background-color: #f3f4f6;
   color: #111827;
-  min-height: 100vh;
 }
 
 /* MAIN LAYOUT */
 .container {
   display: flex;
+  height: 100%;
   min-height: 100vh;
 }
 
-/* ────────────────────────────────────────────── */
-/* SIDEBAR (DESKTOP & MOBILE)                     */
-/* ────────────────────────────────────────────── */
+/* SIDEBAR (DESKTOP) */
 .sidebar {
   width: 240px;
-  background-color: white;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+  background: #fff;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.08);
   display: flex;
   flex-direction: column;
   padding: 32px 24px;
   gap: 32px;
-  z-index: 200;
-  position: relative; /* Always visible */
+  z-index: 300;
+  position: fixed;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
 }
 
 .logo h1 {
   color: #10b981;
-  font-weight: 700;
   font-size: 1.75rem;
+  font-weight: 700;
 }
 
 .nav-menu {
@@ -48,14 +56,13 @@ body {
 .nav-btn {
   background: none;
   border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
   font-weight: 600;
-  font-size: 1rem;
   color: #374151;
   text-align: left;
   cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 8px;
-  transition: background-color 0.2s ease;
+  transition: 0.2s ease;
 }
 
 .nav-btn:hover {
@@ -65,122 +72,77 @@ body {
 
 .nav-btn.active {
   background-color: #10b981;
-  color: white;
+  color: #fff;
 }
 
 /* SIGN OUT BUTTON */
 .signout-btn {
   margin-top: auto;
-  width: 100%;
-  background-color: transparent;
-  border: 1px solid #d1d5db;
-  border-radius: 12px;
   padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
   font-weight: 600;
-  color: #374151;
+  background: none;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: center;
-  transition: 0.2s ease;
 }
 
-.signout-btn:hover {
-  background-color: #fef3f2;
-  border-color: #f87171;
-  color: #b91c1c;
-}
-
-/* ────────────────────────────────────────────── */
-/* MAIN CONTENT                                   */
-/* ────────────────────────────────────────────── */
+/* MAIN CONTENT (DESKTOP) */
 .main-content {
   flex-grow: 1;
+  margin-left: 240px;
   padding: 48px;
-  overflow-y: auto;
   position: relative;
-  margin-left: 240px; /* ensures content is not hidden under sidebar */
 }
 
-/* WELCOME USER BADGE */
 .welcome-user {
   position: absolute;
   top: 24px;
   right: 48px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
   font-weight: 600;
-  font-size: 1rem;
   color: #374151;
+  z-index: 310;
 }
 
-/* ────────────────────────────────────────────── */
-/* TRANSACTIONS SECTION                            */
-/* ────────────────────────────────────────────── */
+/* TRANSACTION SECTION */
+.transactions-section {
+  margin-top: 40px;
+}
+
 .transactions-section h2 {
   font-size: 1.75rem;
   font-weight: 700;
-  margin-bottom: 6px;
 }
 
 .subtitle {
   color: #6b7280;
-  margin-bottom: 24px;
-  font-size: 0.95rem;
+  margin-bottom: 20px;
 }
 
-/* Controls */
 .transactions-controls {
   display: flex;
-  align-items: center;
   gap: 16px;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
 }
 
-.transactions-controls input[type="search"] {
-  flex-grow: 1;
-  padding: 12px 16px;
-  border-radius: 12px;
-  border: 1px solid #d1d5db;
-  font-size: 1rem;
-}
-
+.transactions-controls input,
 .transactions-controls select {
   padding: 12px 16px;
   border-radius: 12px;
   border: 1px solid #d1d5db;
-  background-color: white;
-  cursor: pointer;
 }
 
-.primary-btn {
-  background-color: #10b981;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-/* Transaction List */
 .transaction-list {
-  list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .transaction-item {
-  background-color: white;
+  background: white;
+  padding: 18px;
   border-radius: 16px;
-  padding: 20px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
 
@@ -219,114 +181,71 @@ body {
   color: #6b7280;
 }
 
-/* ────────────────────────────────────────────── */
-/* MODAL                                          */
-/* ────────────────────────────────────────────── */
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.35);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 300;
-}
-
-.modal.hidden {
+/* MOBILE MENU BUTTON (hidden default) */
+.mobile-menu-btn {
   display: none;
 }
 
-.main-content {
-  flex-grow: 1;
-  padding: 48px;
-  position: relative;
-  margin-left: 240px; /* <-- space for the sidebar */
-  min-height: 100vh;
-  background-color: #f3f4f6; /* optional, ensures content area is visible */
-}
-
-
-.modal-content label {
-  display: flex;
-  flex-direction: column;
-  font-weight: 600;
-  font-size: 0.9rem;
-  margin-bottom: 18px;
-}
-
-.modal-content input,
-.modal-content select {
-  margin-top: 6px;
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-}
-
-#cancelBtn {
-  background-color: #e5e7eb;
-  color: #374151;
-  padding: 10px 18px;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-/* ────────────────────────────────────────────── */
-/* REMOVE HAMBURGER / MOBILE SIDEBAR STYLES      */
-/* ────────────────────────────────────────────── */
-.mobile-menu-btn,
-.close-sidebar-btn {
-  display: none !important;
-}
-
+/* MOBILE RESPONSIVE */
 @media (max-width: 768px) {
-  /* Sidebar stays visible */
+
+  /* Hamburger fixed top-left */
+  .mobile-menu-btn {
+    display: block;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    background: white;
+    padding: 12px 14px;
+    font-size: 22px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    z-index: 400; /* ensure above sidebar content */
+    cursor: pointer;
+  }
+
+  /* Sidebar drawer */
   .sidebar {
     width: 240px;
-    position: relative;
-    height: auto;
-    border-radius: 0;
-    padding: 32px 24px;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+    height: 100vh !important;
+    min-height: 100vh !important;
+    top: 0;
+    left: 0;
+    transform: translateX(-260px);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    z-index: 350;
+    /* Push content down so logo is below hamburger */
+    padding-top: 80px;  /* increased from 60px to 80px for more space */
   }
 
-  /* Main content adjusts */
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Main content full width */
   .main-content {
-    margin-left: 240px;
-    padding: 24px;
+    margin-left: 0;
+    padding: 20px;
+    padding-top: 70px;
   }
 
-  /* Nav buttons look same on mobile */
-  .nav-btn {
-    padding: 16px 18px;
-    font-size: 1.15rem;
-    border-radius: 18px;
+  /* Welcome user reposition on mobile */
+  .welcome-user {
+    top: 16px;
+    right: 16px;
+    font-size: 0.95rem;
+    z-index: 410;
   }
 
-  .nav-btn.active {
-    background: #10b981;
-    color: white;
+  .transactions-controls {
+    flex-direction: column;
+    gap: 12px;
   }
 
-  /* Sign out button same style */
-  .signout-btn {
-    margin-top: auto;
-    padding: 18px 20px;
-    border-radius: 20px;
-    font-size: 1.15rem;
-    border: 1px solid #e5e7eb;
-    color: #0f172a;
-  }
-
-  .signout-btn:hover {
-    background-color: #fef3f2;
-    border-color: #ef4444;
-    color: #b91c1c;
+  .transaction-item {
+    padding: 16px;
+    flex-direction: column;
+    gap: 8px;
   }
 }
